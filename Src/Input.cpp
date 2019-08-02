@@ -1,11 +1,18 @@
 #include "Input.hpp"
 
-std::queue<sf::Keyboard::Key> InputManager::GetKeyPressedList()
+std::vector<sf::Keyboard::Key> InputManager::GetKeyPressedList()
 {
     return actualKeyPressed;
 }
 
 void InputManager::addKeyPressed(sf::Keyboard::Key newKey)
 {
-    actualKeyPressed.push(newKey);
+    actualKeyPressed.push_back(newKey);
 }
+
+void InputManager::clearKeyPressed()
+{
+    actualKeyPressed.clear();
+}
+
+

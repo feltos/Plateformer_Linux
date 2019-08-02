@@ -2,11 +2,18 @@
 #include "SFML/Window/Keyboard.hpp"
 #include "Input.hpp"
 #include "iostream"
+#include "Graphics.hpp"
 
 int main(int argc, char** argv)
 {
-    sf::Window window(sf::VideoMode(1920,1080),"MyWindow",sf::Style::Default);
+    sf::RenderWindow window(sf::VideoMode(1920,1080),"MyWindow",sf::Style::Default);
+
     InputManager inputManager;
+    GraphicsManager graphicsManager;
+
+    sf::Sprite sprite = graphicsManager.createSprite("../Textures/BrickGrassTexture.jpg");
+
+    sf::Sprite sprite1 = graphicsManager.createSprite("../Textures/PaperTexture.jpg");
 
     while (window.isOpen())
     {
@@ -23,7 +30,13 @@ int main(int argc, char** argv)
             {
                 window.close();
             }
+
         }
+        window.clear();
+        window.draw(sprite);
+        window.draw(sprite1);
+        window.display();
+        inputManager.GetKeyPressedList().clear();
     }
 
     return 0;

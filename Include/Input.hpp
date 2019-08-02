@@ -2,16 +2,17 @@
 
 #include "SFML/Window/Keyboard.hpp"
 #include "SFML/Window/Mouse.hpp"
-#include "queue"
+#include "vector"
 
 class InputManager
 {
 public:
 
-    std::queue<sf::Keyboard::Key> GetKeyPressedList();
+    std::vector<sf::Keyboard::Key> GetKeyPressedList();
     void addKeyPressed(sf::Keyboard::Key newKey);
+    void clearKeyPressed();
 
 private:
 
-    std::queue<sf::Keyboard::Key> actualKeyPressed;
+    std::vector<sf::Keyboard::Key> actualKeyPressed;
 };
