@@ -16,3 +16,5 @@ void PhysicsManager::Update()
 {
     m_world->Step(1.0f/60.0f,8,3);
 }
+
+

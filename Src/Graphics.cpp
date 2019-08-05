@@ -10,7 +10,7 @@ sf::Texture & GraphicsManager::loadTexture(std::string path)
     {
         printf("Can't load texture");
     }
-
+    texture.setSmooth(true);
     return texture;
 }
 

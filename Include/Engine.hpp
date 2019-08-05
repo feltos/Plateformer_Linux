@@ -7,14 +7,14 @@
 #include "Graphics.hpp"
 #include "Sound.hpp"
 #include "Player.hpp"
-//#include "Physic.hpp"
+#include "Platform.hpp"
 
 class Engine
 {
 
 public:
 
-    explicit  Engine(sf::RenderWindow &renderWindow);
+    explicit Engine(sf::RenderWindow &renderWindow);
     void Init();
     void Loop();
 
@@ -25,4 +25,5 @@ private:
     GraphicsManager graphicsManager;
     PhysicsManager physicsManager;
     Player player;
+    Platform platforms;
 };

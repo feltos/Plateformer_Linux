@@ -4,11 +4,10 @@
 
 class PhysicsManager
 {
+
 public:
+
     PhysicsManager();
-
-public:
-
     b2Body* createBody(b2BodyDef& bodyDef);
     void Update();
 
