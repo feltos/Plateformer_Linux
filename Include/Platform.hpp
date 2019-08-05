@@ -18,6 +18,9 @@ private:
     b2Body* body = nullptr;
     sf::Sprite sprite;
 
+    b2PolygonShape boxShape;
+    b2FixtureDef fixtureDef;
+
 protected:
 
 

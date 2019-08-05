@@ -8,7 +8,7 @@ void Engine::Init() {
 void Engine::Loop()
 {
     player.Init("../Textures/Player.png",graphicsManager,physicsManager);
-    platforms.Init("../Textures/BrickGrassTexture.jpg",graphicsManager,physicsManager);
+    platforms.Init("../Textures/BrickGrassTexture.png",graphicsManager,physicsManager);
 
     sf::Sound footSteps = soundManager.createSound("../Sounds/FootSteps.wav");
 
