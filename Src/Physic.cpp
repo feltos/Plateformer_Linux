@@ -1,23 +1,18 @@
 #include "Physic.hpp"
 
-Bodies::Bodies()
+
+PhysicsManager::PhysicsManager()
 {
-    b2BodyDef myBodyDef;
-    myBodyDef.type = b2_dynamicBody; //this will be a dynamic body
-    myBodyDef.position.Set(0, 20); //set the starting position
-    myBodyDef.angle = 0; //set the starting angle
-    b2Body* dynamicBody = physicsManager->GetWorld().CreateBody(&myBodyDef);
-
-    b2PolygonShape boxShape;
-    boxShape.SetAsBox(1,1);
-
-    b2FixtureDef boxFixtureDef;
-    boxFixtureDef.shape = &boxShape;
-    boxFixtureDef.density = 1;
-    dynamicBody->CreateFixture(&boxFixtureDef);
+    m_world = std::make_unique<b2World>(b2Vec2( 0.0f,9.81f));
 }
 
-b2World PhysicsManager::GetWorld()
+b2Body *PhysicsManager::createBody(b2BodyDef& bodyDef)
 {
-    return *m_world;
+    b2Body* body = m_world->CreateBody(&bodyDef);
+    return body;
+}
+
+void PhysicsManager::Update()
+{
+    m_world->Step(1.0f/60.0f,8,3);
 }

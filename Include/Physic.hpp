@@ -5,25 +5,22 @@
 class PhysicsManager
 {
 public:
+    PhysicsManager();
 
-    b2World GetWorld();
+public:
+
+    b2Body* createBody(b2BodyDef& bodyDef);
+    void Update();
 
 private:
+
 
 protected:
 
-    b2World* m_world;
-    b2Body* m_groundBody;
+    b2Body* m_groundBody = nullptr;
+    std::unique_ptr<b2World> m_world = nullptr;
 
 };
 
-class Bodies
-{
-public:
 
-    Bodies();
 
-private:
-
-    PhysicsManager* physicsManager;
-};
