@@ -1,6 +1,11 @@
 #include <Player.hpp>
 #include "Physic.hpp"
 
+Player::Player()
+{
+    numFootContacts = 0;
+}
+
 void Player::move(sf::Keyboard::Key key)
 {
     b2Vec2 vel = body->GetLinearVelocity();
@@ -45,10 +50,11 @@ void Player::Init(std::string path, GraphicsManager &graphicsManager, PhysicsMan
     body->CreateFixture(&fixtureDef);
 
     //Foot sensor fixture
-    boxShape.SetAsBox(0.3f,0.3f,b2Vec2(0,-2),0);
-    fixtureDef.isSensor = true;
-    b2Fixture* footSensorFixture = body->CreateFixture(&fixtureDef);
-    footSensorFixture->SetUserData((void*)1);
+    footShape.SetAsBox((texture.getSize().x / 100.0f / 2.0f), (texture.getSize().y / 100.0f) / 2.0f, b2Vec2(0, 1), 0);
+    footFixtureDef.shape = &footShape;
+    footFixtureDef.isSensor = true;
+    footFixtureDef.userData = ((void*)1);
+    footSensor = body->CreateFixture(&footFixtureDef);
 }
 
 void Player::Render(sf::RenderWindow &renderWindow)
@@ -62,34 +68,30 @@ void Player::Update()
 
 }
 
-Player::Player()
+ContactListener::ContactListener(Player &player) : player(player)
 {
-    numFootContacts = 0;
+
 }
 
 void ContactListener::BeginContact(b2Contact *contact)
 {
-    printf("BEGIN CONTACT");
     //check if fixture A was the foot sensor
     void* fixtureUserData = contact->GetFixtureA()->GetUserData();
-    if ( fixtureUserData == (void*)2)
+    if (fixtureUserData == (void*)2)
     {
-        printf("BEGIN FIXTURE A");
         player.numFootContacts++;
     }
 
     //check if fixture B was the foot sensor
     fixtureUserData = contact->GetFixtureB()->GetUserData();
-    if ( fixtureUserData == (void*)2)
+    if (fixtureUserData == (void*)2)
     {
-        printf("BEGIN FIXTURE B");
         player.numFootContacts++;
     }
 }
 
 void ContactListener::EndContact(b2Contact *contact)
 {
-    printf("END CONTACT");
     //check if fixture A was the foot sensor
     void* fixtureUserData = contact->GetFixtureA()->GetUserData();
     if ( fixtureUserData == (void*)2)
@@ -105,9 +107,5 @@ void ContactListener::EndContact(b2Contact *contact)
     }
 }
 
-ContactListener::ContactListener(Player &player) : player(player)
-{
-
-}
 
 

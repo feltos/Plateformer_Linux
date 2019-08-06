@@ -21,7 +21,8 @@ void Engine::Loop()
                 renderWindow.close();
             }
 
-            if (event.type == sf::Event::KeyPressed) {
+            if (event.type == sf::Event::KeyPressed)
+            {
                 auto key = event.key.code;
 
                 if (key == sf::Keyboard::D || key == sf::Keyboard::A) {
@@ -30,6 +31,11 @@ void Engine::Loop()
                 if (key == sf::Keyboard::Space) {
                     player.jump();
                 }
+            }
+
+            if(event.type = sf::Event::MouseWheelMoved)
+            {
+                graphicsManager.ZoomViewport();
             }
         }
         physicsManager.Update();

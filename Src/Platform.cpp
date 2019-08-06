@@ -18,9 +18,9 @@ Platform::Init(GraphicsManager &graphicsManager, PhysicsManager &physicsManager,
     boxShape.SetAsBox(((texture.getSize().x / 100.0f) / 2.0f), (texture.getSize().y / 100.0f) / 2.0f);
     fixtureDef.shape = &boxShape;
     fixtureDef.density = 1;
+    fixtureDef.userData = (void*)2;
     body->CreateFixture(&fixtureDef);
 
-    fixtureDef.userData = (void*)2;
 
     return sprite;
 }

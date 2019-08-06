@@ -30,6 +30,10 @@ private:
 
     b2PolygonShape boxShape;
     b2FixtureDef fixtureDef;
+
+    b2PolygonShape footShape;
+    b2Fixture* footSensor = nullptr;
+    b2FixtureDef footFixtureDef;
     sf::RectangleShape shape;
 
 };

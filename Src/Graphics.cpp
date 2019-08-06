@@ -19,4 +19,17 @@ GraphicsManager::GraphicsManager()
     texturesList.reserve(8);
 }
 
+void GraphicsManager::ZoomViewport(float factor)
+{
+
+    if(sf::Mouse::Wheel::HorizontalWheel > 1)
+    {
+
+    }
+    if(sf::Mouse::Wheel::HorizontalWheel < 1)
+    {
+
+    }
+}
+
 
