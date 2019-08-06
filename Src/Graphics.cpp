@@ -19,17 +19,10 @@ GraphicsManager::GraphicsManager()
     texturesList.reserve(8);
 }
 
-void GraphicsManager::ZoomViewport(float factor)
+void GraphicsManager::ZoomViewport(float factor, sf::View view)
 {
-
-    if(sf::Mouse::Wheel::HorizontalWheel > 1)
-    {
-
-    }
-    if(sf::Mouse::Wheel::HorizontalWheel < 1)
-    {
-
-    }
+    std::cout<<factor <<"\n";
+    view.zoom(factor);
 }
 
 

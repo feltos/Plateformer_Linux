@@ -35,7 +35,8 @@ void Engine::Loop()
 
             if(event.type = sf::Event::MouseWheelMoved)
             {
-                graphicsManager.ZoomViewport();
+                float wheelMoved = event.mouseWheel.delta;
+                graphicsManager.ZoomViewport(wheelMoved, renderWindow.getView());
             }
         }
         physicsManager.Update();

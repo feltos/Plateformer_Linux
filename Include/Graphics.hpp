@@ -4,6 +4,7 @@
 #include "string"
 #include "vector"
 #include "SFML/Graphics/View.hpp"
+#include "iostream"
 
 class GraphicsManager
 {
@@ -13,7 +14,7 @@ public:
 
     sf::Texture & loadTexture(std::string path);
 
-    void ZoomViewport(float factor);
+    static void ZoomViewport(float factor, sf::View view);
 
 private:
 
