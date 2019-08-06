@@ -4,12 +4,14 @@
 #include "Box2D/Box2D.h"
 #include "Physic.hpp"
 #include "Graphics.hpp"
+#include "vector"
 
 class Platform
 {
 public:
 
-    void Init(std::string path, GraphicsManager &graphicsManager, PhysicsManager &physicsManager);
+    sf::Sprite
+    Init(GraphicsManager &graphicsManager, PhysicsManager &physicsManager, sf::Vector2f position, sf::String path);
     void Render(sf::RenderWindow& renderWindow);
 
 private:

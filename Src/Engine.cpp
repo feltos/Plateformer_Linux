@@ -8,7 +8,7 @@ void Engine::Init() {
 void Engine::Loop()
 {
     player.Init("../Textures/Player.png",graphicsManager,physicsManager);
-    platforms.Init("../Textures/BrickGrassTexture.png",graphicsManager,physicsManager);
+    auto ground = platforms.Init(graphicsManager, physicsManager, sf::Vector2f(960.0f, 1180.0f),"../Textures/Ground.png");
 
     sf::Sound footSteps = soundManager.createSound("../Sounds/FootSteps.wav");
 
@@ -35,14 +35,13 @@ void Engine::Loop()
         physicsManager.Update();
         player.Update();
         renderWindow.clear();
-        //renderWindow.draw(sprite);
         player.Render(renderWindow);
-        platforms.Render(renderWindow);
+        renderWindow.draw(ground);
         renderWindow.display();
     }
 }
 
-Engine::Engine(sf::RenderWindow &renderWindow) : renderWindow(renderWindow)
+Engine::Engine(sf::RenderWindow &renderWindow) : renderWindow(renderWindow), physicsManager(player)
 {
 
 }
