@@ -15,7 +15,7 @@ public:
 
     Player();
 
-    void move(sf::Keyboard::Key key);
+    void move(sf::Keyboard::Key key, float deltaTime);
     void jump();
     void Init(std::string path, GraphicsManager &graphicsManager, PhysicsManager &physicsManager);
     void Render(sf::RenderWindow& renderWindow);

@@ -6,28 +6,46 @@ Player::Player()
     numFootContacts = 0;
 }
 
-void Player::move(sf::Keyboard::Key key)
+void Player::move(sf::Keyboard::Key key, float deltaTime)
 {
+
     b2Vec2 vel = body->GetLinearVelocity();
+    std::cout<<"KEY PRESSED";
 
     if (key == sf::Keyboard::D)
     {
-        vel.x = 3.0f;
+        vel.x = 5.0f;
+        if(sprite.getScale().x <= -1.0f)
+        {
+            sprite.scale(-1.0f,1.0f);
+        }
     }
     if (key == sf::Keyboard::A)
     {
-        vel.x = -3.0f;
+        vel.x = -5.0f;
+        if(sprite.getScale().x >= 1.0f)
+        {
+            sprite.scale(-1.0f,1.0f);
+        }
     }
+
     body->SetLinearVelocity(vel);
 }
 
 void Player::jump()
 {
-    if(numFootContacts >= 1)
+    if(numFootContacts > 1)
     {
         b2Vec2 vel = body->GetLinearVelocity();
-        vel.y = -7.0f;
+        vel.y = -10.0f;
         body->SetLinearVelocity(vel);
+    }
+    if(numFootContacts == 1)
+    {
+        b2Vec2 vel = body->GetLinearVelocity();
+        vel.y = -10.0f;
+        body->SetLinearVelocity(vel);
+        numFootContacts--;
     }
 }
 
@@ -79,14 +97,14 @@ void ContactListener::BeginContact(b2Contact *contact)
     void* fixtureUserData = contact->GetFixtureA()->GetUserData();
     if (fixtureUserData == (void*)2)
     {
-        player.numFootContacts++;
+        player.numFootContacts = 2;
     }
 
     //check if fixture B was the foot sensor
     fixtureUserData = contact->GetFixtureB()->GetUserData();
     if (fixtureUserData == (void*)2)
     {
-        player.numFootContacts++;
+        player.numFootContacts = 2;
     }
 }
 
@@ -96,14 +114,14 @@ void ContactListener::EndContact(b2Contact *contact)
     void* fixtureUserData = contact->GetFixtureA()->GetUserData();
     if ( fixtureUserData == (void*)2)
     {
-        player.numFootContacts--;
+        player.numFootContacts = 1;
     }
 
     //check if fixture B was the foot sensor
     fixtureUserData = contact->GetFixtureB()->GetUserData();
     if ( fixtureUserData == (void*)2)
     {
-        player.numFootContacts--;
+        player.numFootContacts = 1;
     }
 }
 

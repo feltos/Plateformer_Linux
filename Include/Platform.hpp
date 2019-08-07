@@ -12,16 +12,9 @@ public:
 
     sf::Sprite
     Init(GraphicsManager &graphicsManager, PhysicsManager &physicsManager, sf::Vector2f position, sf::String path);
-    void Render(sf::RenderWindow& renderWindow);
+    void Render(sf::RenderWindow &renderWindow, sf::Sprite sprite);
 
 private:
-
-    b2BodyDef myBodyDef;
-    b2Body* body = nullptr;
-    sf::Sprite sprite;
-
-    b2PolygonShape boxShape;
-    b2FixtureDef fixtureDef;
 
 protected:
 
