@@ -14,8 +14,6 @@ public:
 
     sf::Texture & loadTexture(std::string path);
 
-    static void ZoomViewport(float factor, sf::View view);
-
 private:
 
     std::vector<sf::Texture> texturesList;

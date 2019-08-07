@@ -1,7 +1,13 @@
 
 #include <Engine.hpp>
 
-void Engine::Init() {
+Engine::Engine(sf::RenderWindow &renderWindow) : renderWindow(renderWindow), physicsManager(player)
+{
+
+}
+
+void Engine::Init()
+{
 
 }
 
@@ -9,7 +15,6 @@ void Engine::Loop()
 {
     player.Init("../Textures/Player.png",graphicsManager,physicsManager);
     auto ground = platforms.Init(graphicsManager, physicsManager, sf::Vector2f(960.0f, 1180.0f),"../Textures/Ground.png");
-
     sf::Sound footSteps = soundManager.createSound("../Sounds/FootSteps.wav");
 
     while (renderWindow.isOpen()) {
@@ -33,10 +38,10 @@ void Engine::Loop()
                 }
             }
 
-            if(event.type = sf::Event::MouseWheelMoved)
+            if(event.type == sf::Event::MouseWheelScrolled)
             {
-                float wheelMoved = event.mouseWheel.delta;
-                graphicsManager.ZoomViewport(wheelMoved, renderWindow.getView());
+                float delta = event.mouseWheelScroll.delta;
+                ZoomViewport(delta);
             }
         }
         physicsManager.Update();
@@ -48,9 +53,23 @@ void Engine::Loop()
     }
 }
 
-Engine::Engine(sf::RenderWindow &renderWindow) : renderWindow(renderWindow), physicsManager(player)
+void Engine::ZoomViewport(float delta)
 {
+    std::cout << delta << "\n";
+    auto view = renderWindow.getView();
+    float factor = 0;
 
+    if (delta <= -1.0f)
+    {
+        factor = 2.0f;
+        view.zoom(factor);
+    }
+    if(delta >= 1.0f)
+    {
+        factor = 0.5f;
+        view.zoom(factor);
+    }
+    renderWindow.setView(view);
 }
 
 

@@ -17,6 +17,7 @@ public:
     explicit Engine(sf::RenderWindow &renderWindow);
     void Init();
     void Loop();
+    void ZoomViewport(float delta);
 
 private:
 

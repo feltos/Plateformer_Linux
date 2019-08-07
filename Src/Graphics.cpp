@@ -19,10 +19,4 @@ GraphicsManager::GraphicsManager()
     texturesList.reserve(8);
 }
 
-void GraphicsManager::ZoomViewport(float factor, sf::View view)
-{
-    std::cout<<factor <<"\n";
-    view.zoom(factor);
-}
-
 
