@@ -15,12 +15,17 @@ public:
 
     Player();
 
-    void move(sf::Keyboard::Key key, float deltaTime);
+    void move(sf::Keyboard::Key key);
     void jump();
     void Init(std::string path, GraphicsManager &graphicsManager, PhysicsManager &physicsManager);
     void Render(sf::RenderWindow& renderWindow);
     void Update();
+    void stopMoving();
     int numFootContacts;
+
+    std::vector<sf::IntRect> PlayerAnim();
+    void SetSprite(sf::IntRect intRect);
+
 
 private:
 
@@ -36,6 +41,8 @@ private:
     b2FixtureDef footFixtureDef;
     sf::RectangleShape shape;
 
+    std::vector<sf::IntRect> animation;
+    int animationCapacity = 6;
 };
 
 class  ContactListener : public  b2ContactListener

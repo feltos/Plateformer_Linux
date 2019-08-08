@@ -6,16 +6,15 @@ Player::Player()
     numFootContacts = 0;
 }
 
-void Player::move(sf::Keyboard::Key key, float deltaTime)
+void Player::move(sf::Keyboard::Key key)
 {
 
     b2Vec2 vel = body->GetLinearVelocity();
-    std::cout<<"KEY PRESSED";
 
     if (key == sf::Keyboard::D)
     {
         vel.x = 5.0f;
-        if(sprite.getScale().x <= -1.0f)
+        if(sprite.getScale().x <= -0.8f)
         {
             sprite.scale(-1.0f,1.0f);
         }
@@ -23,12 +22,11 @@ void Player::move(sf::Keyboard::Key key, float deltaTime)
     if (key == sf::Keyboard::A)
     {
         vel.x = -5.0f;
-        if(sprite.getScale().x >= 1.0f)
+        if(sprite.getScale().x >= 0.8f)
         {
             sprite.scale(-1.0f,1.0f);
         }
     }
-
     body->SetLinearVelocity(vel);
 }
 
@@ -37,13 +35,13 @@ void Player::jump()
     if(numFootContacts > 1)
     {
         b2Vec2 vel = body->GetLinearVelocity();
-        vel.y = -10.0f;
+        vel.y = -8.0f;
         body->SetLinearVelocity(vel);
     }
     if(numFootContacts == 1)
     {
         b2Vec2 vel = body->GetLinearVelocity();
-        vel.y = -10.0f;
+        vel.y = -8.0f;
         body->SetLinearVelocity(vel);
         numFootContacts--;
     }
@@ -53,7 +51,10 @@ void Player::Init(std::string path, GraphicsManager &graphicsManager, PhysicsMan
 {
     auto &texture = graphicsManager.loadTexture(path);
     sprite.setTexture(texture);
-    sprite.setOrigin(texture.getSize().x / 2, texture.getSize().y / 2);
+    sprite.setTextureRect(sf::IntRect(0.0f,0.0f,256.0f,256.0f));
+    sprite.setScale(0.8f,0.8f);
+    sprite.setOrigin(sprite.getTextureRect().width / 2, sprite.getTextureRect().height/ 2);
+
     sprite.setPosition(960.f, 540.f);
 
     myBodyDef.type = b2_dynamicBody; //this will be a dynamic body
@@ -62,13 +63,14 @@ void Player::Init(std::string path, GraphicsManager &graphicsManager, PhysicsMan
     myBodyDef.fixedRotation = true;
     body = physicsManager.createBody(myBodyDef);
 
-    boxShape.SetAsBox(((texture.getSize().x / 100.0f) / 2.0f), (texture.getSize().y / 100.0f) / 2.0f);
+    boxShape.SetAsBox((sprite.getTextureRect().width / 100.0f) / 4.0f, (sprite.getTextureRect().height / 100.0f) / 2.8f);
     fixtureDef.shape = &boxShape;
     fixtureDef.density = 1;
     body->CreateFixture(&fixtureDef);
+    body->SetGravityScale(2.0f);
 
     //Foot sensor fixture
-    footShape.SetAsBox((texture.getSize().x / 100.0f / 2.0f), (texture.getSize().y / 100.0f) / 2.0f, b2Vec2(0, 1), 0);
+    footShape.SetAsBox((sprite.getTextureRect().width / 100.0f) / 2.0f, (sprite.getTextureRect().height / 100.0f) / 2.0f, b2Vec2(0, 0), 0);
     footFixtureDef.shape = &footShape;
     footFixtureDef.isSensor = true;
     footFixtureDef.userData = ((void*)1);
@@ -83,7 +85,29 @@ void Player::Render(sf::RenderWindow &renderWindow)
 void Player::Update()
 {
     sprite.setPosition(body->GetPosition().x * 100, body->GetPosition().y * 100);
+}
 
+std::vector<sf::IntRect> Player::PlayerAnim()
+{
+    animation.reserve(animationCapacity);
+    float rectLeftSize = 0;
+    for(int i = 0;i < animationCapacity;i++)
+    {
+        animation[i] = sf::IntRect(animation[i].left + rectLeftSize,0.0f,256.0f,256.0f);
+        animation.push_back(animation[i]);
+        rectLeftSize += 256.0f;
+    }
+    return animation;
+}
+
+void Player::SetSprite(sf::IntRect intRect)
+{
+    sprite.setTextureRect(intRect);
+}
+
+void Player::stopMoving()
+{
+    body->SetLinearVelocity(b2Vec2(0.0f,body->GetLinearVelocity().y));
 }
 
 ContactListener::ContactListener(Player &player) : player(player)
