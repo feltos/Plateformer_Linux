@@ -21,6 +21,7 @@ public:
     void Render(sf::RenderWindow& renderWindow);
     void Update(float deltaTime);
     void stopMoving();
+    sf::Vector2f GetPosition();
     int numFootContacts;
     int playerAnimIndex = 0;
     float loopTime = 0;

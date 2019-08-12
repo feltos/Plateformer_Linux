@@ -64,6 +64,7 @@ void Engine::Loop()
         }
         physicsManager.Update();
         player.Update(deltaTime.asSeconds());
+        graphicsManager.Scrolling(player.GetPosition(),renderWindow);
         renderWindow.clear();
         player.Render(renderWindow);
         platforms.Render(renderWindow,platforms.getSpriteVector());

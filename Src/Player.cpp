@@ -113,6 +113,11 @@ void Player::stopMoving()
     body->SetLinearVelocity(b2Vec2(0.0f,body->GetLinearVelocity().y));
 }
 
+sf::Vector2f Player::GetPosition()
+{
+    return sprite.getPosition();
+}
+
 ContactListener::ContactListener(Player &player) : player(player)
 {
 
