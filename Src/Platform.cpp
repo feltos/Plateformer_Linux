@@ -2,7 +2,7 @@
 #include <Platform.hpp>
 
 sf::Sprite
-Platform::Init(GraphicsManager &graphicsManager, PhysicsManager &physicsManager, sf::Vector2f position, sf::String path)
+Platform::CreateSprite(GraphicsManager &graphicsManager, PhysicsManager &physicsManager, sf::Vector2f position, sf::String path)
 {
     sf::Sprite newSprite;
 
@@ -31,12 +31,34 @@ Platform::Init(GraphicsManager &graphicsManager, PhysicsManager &physicsManager,
     newFixtureDef.userData = (void*)2;
     newBody->CreateFixture(&newFixtureDef);
 
+    spriteVector.push_back(newSprite);
+
     return newSprite;
 }
 
-void Platform::Render(sf::RenderWindow &renderWindow, sf::Sprite sprite)
+void Platform::Render(sf::RenderWindow &renderWindow, std::vector<sf::Sprite> sprite)
 {
-    renderWindow.draw(sprite);
+    for(int i = 0; i < spriteVector.size(); i++)
+    {
+        renderWindow.draw(sprite[i]);
+    }
+}
+
+const std::vector<sf::Sprite> &Platform::getSpriteVector() const
+{
+    return spriteVector;
+}
+
+void Platform::Init(GraphicsManager &graphicsManager, PhysicsManager &physicsManager)
+{
+    CreateSprite(graphicsManager, physicsManager, sf::Vector2f(960.0f, 1180.0f),
+                                               "../Textures/Ground.png");
+    CreateSprite(graphicsManager, physicsManager, sf::Vector2f(1900.0f, 600.0f),
+                                                  "../Textures/Platform.png");
+    CreateSprite(graphicsManager, physicsManager, sf::Vector2f(200.0f, 600.0f),
+                                                  "../Textures/Platform.png");
+    CreateSprite(graphicsManager, physicsManager, sf::Vector2f(1000.0f, 600.0f),
+                                                  "../Textures/Platform.png");
 }
 
 

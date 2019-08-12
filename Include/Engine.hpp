@@ -18,7 +18,6 @@ public:
     void Init();
     void Loop();
     void ZoomViewport(float delta);
-    sf::Clock clock;
 
 private:
 

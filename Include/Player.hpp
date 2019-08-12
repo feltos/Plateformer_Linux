@@ -19,12 +19,11 @@ public:
     void jump();
     void Init(std::string path, GraphicsManager &graphicsManager, PhysicsManager &physicsManager);
     void Render(sf::RenderWindow& renderWindow);
-    void Update();
+    void Update(float deltaTime);
     void stopMoving();
     int numFootContacts;
-
-    std::vector<sf::IntRect> PlayerAnim();
-    void SetSprite(sf::IntRect intRect);
+    int playerAnimIndex = 0;
+    float loopTime = 0;
 
 
 private:
@@ -41,8 +40,9 @@ private:
     b2FixtureDef footFixtureDef;
     sf::RectangleShape shape;
 
-    std::vector<sf::IntRect> animation;
+    std::vector<sf::IntRect> playerAnim;
     int animationCapacity = 6;
+
 };
 
 class  ContactListener : public  b2ContactListener

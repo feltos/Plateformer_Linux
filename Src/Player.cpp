@@ -4,6 +4,13 @@
 Player::Player()
 {
     numFootContacts = 0;
+    playerAnim.reserve(animationCapacity);
+
+    for(int i = 0;i < animationCapacity ;i++)
+    {
+        playerAnim[i] = sf::IntRect(i * 256 , 0.0f, 256.0f, 256.0f);
+        playerAnim.push_back(playerAnim[i]);
+    }
 }
 
 void Player::move(sf::Keyboard::Key key)
@@ -51,7 +58,7 @@ void Player::Init(std::string path, GraphicsManager &graphicsManager, PhysicsMan
 {
     auto &texture = graphicsManager.loadTexture(path);
     sprite.setTexture(texture);
-    sprite.setTextureRect(sf::IntRect(0.0f,0.0f,256.0f,256.0f));
+    sprite.setTextureRect(playerAnim[0]);
     sprite.setScale(0.8f,0.8f);
     sprite.setOrigin(sprite.getTextureRect().width / 2, sprite.getTextureRect().height/ 2);
 
@@ -82,27 +89,23 @@ void Player::Render(sf::RenderWindow &renderWindow)
     renderWindow.draw(sprite);
 }
 
-void Player::Update()
+void Player::Update(float deltaTime)
 {
     sprite.setPosition(body->GetPosition().x * 100, body->GetPosition().y * 100);
-}
+    loopTime += deltaTime;
+    std::cout<<playerAnimIndex<<"\n";
 
-std::vector<sf::IntRect> Player::PlayerAnim()
-{
-    animation.reserve(animationCapacity);
-    float rectLeftSize = 0;
-    for(int i = 0;i < animationCapacity;i++)
+    if(loopTime >= 0.16f)
     {
-        animation[i] = sf::IntRect(animation[i].left + rectLeftSize,0.0f,256.0f,256.0f);
-        animation.push_back(animation[i]);
-        rectLeftSize += 256.0f;
+        sprite.setTextureRect(playerAnim[playerAnimIndex]);
+        playerAnimIndex++;
+        loopTime = 0;
     }
-    return animation;
-}
-
-void Player::SetSprite(sf::IntRect intRect)
-{
-    sprite.setTextureRect(intRect);
+    if(playerAnimIndex == animationCapacity)
+    {
+        std::cout<<"PLAYER ANIM INDEX = 0" << "\n";
+        playerAnimIndex = 0;
+    }
 }
 
 void Player::stopMoving()

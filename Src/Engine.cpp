@@ -14,39 +14,19 @@ void Engine::Init()
 void Engine::Loop()
 {
     player.Init("../Textures/spriteStrip.png",graphicsManager,physicsManager);
-    sf::Sprite ground = platforms.Init(graphicsManager, physicsManager, sf::Vector2f(960.0f, 1180.0f),"../Textures/Ground.png");
-    sf::Sprite platform1 = platforms.Init(graphicsManager, physicsManager, sf::Vector2f(1900.0f, 600.0f), "../Textures/Platform.png");
-    sf::Sprite platform2 = platforms.Init(graphicsManager, physicsManager, sf::Vector2f(200.0f, 600.0f), "../Textures/Platform.png");
-    sf::Sprite platform3 = platforms.Init(graphicsManager, physicsManager, sf::Vector2f(1000.0f, 600.0f), "../Textures/Platform.png");
+    platforms.Init(graphicsManager, physicsManager);
 
     sf::Sound footSteps = soundManager.createSound("../Sounds/FootSteps.wav");
-
-    auto anim = player.PlayerAnim();
-    int animIterator = 0;
-    float timeLoop = 0.5f;
+    sf::Clock clock;
 
     while (renderWindow.isOpen())
     {
+        sf::Time deltaTime = clock.restart();
+
         // on inspecte tous les évènements de la fenêtre qui ont été émis depuis la précédente itération
         sf::Event event;
         while (renderWindow.pollEvent(event))
         {
-            sf::Time time = clock.getElapsedTime();
-            float deltaTime = time.asSeconds();
-
-            ///////CHANGE ANIMATION/////////////
-            std::cout<<deltaTime<< "\n";
-            if(deltaTime >= timeLoop)
-            {
-                animIterator++;
-                clock.restart();
-            }
-            if(animIterator >= anim.size())
-            {
-                animIterator = 0;
-            }
-            /////////////////////////////
-
             // évènement "fermeture demandée" : on ferme la fenêtre
             if (event.type == sf::Event::Closed)
             {
@@ -56,7 +36,6 @@ void Engine::Loop()
             if (event.type == sf::Event::KeyPressed)
             {
                 auto key = event.key.code;
-
 
                 if (key == sf::Keyboard::D || key == sf::Keyboard::A)
                 {
@@ -83,17 +62,11 @@ void Engine::Loop()
                 ZoomViewport(delta);
             }
         }
-
-
         physicsManager.Update();
-        player.Update();
+        player.Update(deltaTime.asSeconds());
         renderWindow.clear();
-        player.SetSprite(anim[animIterator]);
         player.Render(renderWindow);
-        platforms.Render(renderWindow,ground);
-        platforms.Render(renderWindow, platform1);
-        platforms.Render(renderWindow,platform2);
-        platforms.Render(renderWindow,platform3);
+        platforms.Render(renderWindow,platforms.getSpriteVector());
         renderWindow.display();
     }
 }
