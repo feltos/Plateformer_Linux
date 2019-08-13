@@ -13,7 +13,7 @@ void Engine::Init()
 
 void Engine::Loop()
 {
-    player.Init("../Textures/spriteStrip.png",graphicsManager,physicsManager);
+    player.Init(graphicsManager,physicsManager);
     platforms.Init(graphicsManager, physicsManager);
 
     sf::Sound footSteps = soundManager.createSound("../Sounds/FootSteps.wav");
@@ -22,7 +22,6 @@ void Engine::Loop()
     while (renderWindow.isOpen())
     {
         sf::Time deltaTime = clock.restart();
-
         // on inspecte tous les évènements de la fenêtre qui ont été émis depuis la précédente itération
         sf::Event event;
         while (renderWindow.pollEvent(event))

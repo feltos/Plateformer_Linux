@@ -4,12 +4,25 @@
 Player::Player()
 {
     numFootContacts = 0;
-    playerAnim.reserve(animationCapacity);
 
-    for(int i = 0;i < animationCapacity ;i++)
+    IdleAnim.reserve(32);
+    RunAnim.reserve(18);
+    JumpAnim.reserve(8);
+
+    for(int i = 0;i < 32; i++)
     {
-        playerAnim[i] = sf::IntRect(i * 256 , 0.0f, 256.0f, 256.0f);
-        playerAnim.push_back(playerAnim[i]);
+        IdleAnim[i] = sf::IntRect(i * 281 , 0.0f, 281.0f, 251.0f);
+        IdleAnim.push_back(IdleAnim[i]);
+    }
+    for(int i = 0;i < 18 ;i++)
+    {
+        RunAnim[i] = sf::IntRect(i * 240 , 0.0f, 240.0f, 245.0f);
+        RunAnim.push_back(RunAnim[i]);
+    }
+    for(int i = 0;i < 8 ;i++)
+    {
+        JumpAnim[i] = sf::IntRect(i * 136 , 0.0f, 136.0f, 235.0f);
+        JumpAnim.push_back(JumpAnim[i]);
     }
 }
 
@@ -20,7 +33,7 @@ void Player::move(sf::Keyboard::Key key)
 
     if (key == sf::Keyboard::D)
     {
-        vel.x = 5.0f;
+        vel.x = 10.0f;
         if(sprite.getScale().x <= -0.8f)
         {
             sprite.scale(-1.0f,1.0f);
@@ -28,7 +41,7 @@ void Player::move(sf::Keyboard::Key key)
     }
     if (key == sf::Keyboard::A)
     {
-        vel.x = -5.0f;
+        vel.x = -10.0f;
         if(sprite.getScale().x >= 0.8f)
         {
             sprite.scale(-1.0f,1.0f);
@@ -54,23 +67,26 @@ void Player::jump()
     }
 }
 
-void Player::Init(std::string path, GraphicsManager &graphicsManager, PhysicsManager &physicsManager)
+void Player::Init( GraphicsManager &graphicsManager, PhysicsManager &physicsManager)
 {
-    auto &texture = graphicsManager.loadTexture(path);
-    sprite.setTexture(texture);
-    sprite.setTextureRect(playerAnim[0]);
-    sprite.setScale(0.8f,0.8f);
+    idleTexture = graphicsManager.loadTexture("../Textures/ShantaeAnim/ShantaeIdle.png");
+    runTexture = graphicsManager.loadTexture("../Textures/ShantaeAnim/ShantaeRun.png");
+    jumpTexture = graphicsManager.loadTexture("../Textures/ShantaeAnim/ShantaeJump.png");
+
+    sprite.setTexture(idleTexture);
+    sprite.setTextureRect(IdleAnim[0]);
+    sprite.setScale(1.0f,1.0f);
     sprite.setOrigin(sprite.getTextureRect().width / 2, sprite.getTextureRect().height/ 2);
 
     sprite.setPosition(960.f, 540.f);
 
     myBodyDef.type = b2_dynamicBody; //this will be a dynamic body
-    myBodyDef.position.Set(sprite.getPosition().x / 100.0f, sprite.getPosition().y / 100.0f); //set the starting position
+    myBodyDef.position.Set(sprite.getTextureRect().width / 100.0f, sprite.getTextureRect().height / 100.0f); //set the starting position
     myBodyDef.angle = 0; //set the starting angle
     myBodyDef.fixedRotation = true;
     body = physicsManager.createBody(myBodyDef);
 
-    boxShape.SetAsBox((sprite.getTextureRect().width / 100.0f) / 4.0f, (sprite.getTextureRect().height / 100.0f) / 2.8f);
+    boxShape.SetAsBox((sprite.getTextureRect().width / 100.0f) / 4.0f, (sprite.getTextureRect().height / 100.0f) / 2.0f);
     fixtureDef.shape = &boxShape;
     fixtureDef.density = 1;
     body->CreateFixture(&fixtureDef);
@@ -92,20 +108,57 @@ void Player::Render(sf::RenderWindow &renderWindow)
 void Player::Update(float deltaTime)
 {
     sprite.setPosition(body->GetPosition().x * 100, body->GetPosition().y * 100);
-    loopTime += deltaTime;
-    std::cout<<playerAnimIndex<<"\n";
 
-    if(loopTime >= 0.16f)
+    switch (state)
     {
-        sprite.setTextureRect(playerAnim[playerAnimIndex]);
-        playerAnimIndex++;
-        loopTime = 0;
+        case AnimState::IDLE :
+        {
+            loopTime += deltaTime;
+            if(loopTime >= 0.025f)
+            {
+                std::cout<<"idle anim size is : "<< IdleAnim.size()<< "\n";
+                sprite.setTextureRect(IdleAnim[playerAnimIndex]);
+                playerAnimIndex++;
+                loopTime = 0;
+            }
+            if(playerAnimIndex == IdleAnim.size())
+            {
+                playerAnimIndex = 0;
+            }
+            break;
+        }
+        case AnimState::RUN :
+        {
+            loopTime += deltaTime;
+            if(loopTime >= 0.025f)
+            {
+                sprite.setTextureRect(RunAnim[playerAnimIndex]);
+                playerAnimIndex++;
+                loopTime = 0;
+            }
+            if(playerAnimIndex == RunAnim.size())
+            {
+                playerAnimIndex = 0;
+            }
+            break;
+        }
+        case AnimState::JUMP :
+        {
+            loopTime += deltaTime;
+            if(loopTime >= 0.025f)
+            {
+                sprite.setTextureRect(JumpAnim[playerAnimIndex]);
+                playerAnimIndex++;
+                loopTime = 0;
+            }
+            if(playerAnimIndex == JumpAnim.size())
+            {
+                playerAnimIndex = 0;
+            }
+            break;
+        }
     }
-    if(playerAnimIndex == animationCapacity)
-    {
-        std::cout<<"PLAYER ANIM INDEX = 0" << "\n";
-        playerAnimIndex = 0;
-    }
+
 }
 
 void Player::stopMoving()

@@ -8,7 +8,6 @@
 #include "iostream"
 
 class PhysicsManager;
-
 class Player
 {
 public:
@@ -17,7 +16,7 @@ public:
 
     void move(sf::Keyboard::Key key);
     void jump();
-    void Init(std::string path, GraphicsManager &graphicsManager, PhysicsManager &physicsManager);
+    void Init(GraphicsManager &graphicsManager, PhysicsManager &physicsManager);
     void Render(sf::RenderWindow& renderWindow);
     void Update(float deltaTime);
     void stopMoving();
@@ -25,6 +24,18 @@ public:
     int numFootContacts;
     int playerAnimIndex = 0;
     float loopTime = 0;
+    sf::Texture jumpTexture;
+    sf::Texture idleTexture;
+    sf::Texture runTexture;
+
+
+    enum AnimState
+    {
+        IDLE,
+        RUN,
+        JUMP
+    };
+    AnimState state = AnimState::IDLE;
 
 
 private:
@@ -41,8 +52,9 @@ private:
     b2FixtureDef footFixtureDef;
     sf::RectangleShape shape;
 
-    std::vector<sf::IntRect> playerAnim;
-    int animationCapacity = 6;
+    std::vector<sf::IntRect> IdleAnim;
+    std::vector<sf::IntRect> RunAnim;
+    std::vector<sf::IntRect> JumpAnim;
 
 };
 
