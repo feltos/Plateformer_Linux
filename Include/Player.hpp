@@ -6,6 +6,7 @@
 #include "Box2D/Box2D.h"
 #include "Graphics.hpp"
 #include "iostream"
+#include "mutex"
 
 class PhysicsManager;
 class Player
@@ -21,9 +22,11 @@ public:
     void Update(float deltaTime);
     void stopMoving();
     sf::Vector2f GetPosition();
-    int numFootContacts;
+    int nmbOfJump;
+    bool isGrounded = false;
     int playerAnimIndex = 0;
     float loopTime = 0;
+
     sf::Texture jumpTexture;
     sf::Texture idleTexture;
     sf::Texture runTexture;

@@ -57,8 +57,7 @@ void Platform::Init(GraphicsManager &graphicsManager, PhysicsManager &physicsMan
                                                   "../Textures/Platform.png");
     CreateSprite(graphicsManager, physicsManager, sf::Vector2f(200.0f, 600.0f),
                                                   "../Textures/Platform.png");
-    CreateSprite(graphicsManager, physicsManager, sf::Vector2f(1000.0f, 600.0f),
-                                                  "../Textures/Platform.png");
+
 }
 
 

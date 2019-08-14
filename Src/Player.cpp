@@ -3,7 +3,7 @@
 
 Player::Player()
 {
-    numFootContacts = 0;
+    nmbOfJump = 0;
 
     IdleAnim.reserve(32);
     RunAnim.reserve(18);
@@ -28,7 +28,6 @@ Player::Player()
 
 void Player::move(sf::Keyboard::Key key)
 {
-
     b2Vec2 vel = body->GetLinearVelocity();
 
     if (key == sf::Keyboard::D)
@@ -52,18 +51,18 @@ void Player::move(sf::Keyboard::Key key)
 
 void Player::jump()
 {
-    if(numFootContacts > 1)
+    if(nmbOfJump > 1)
     {
         b2Vec2 vel = body->GetLinearVelocity();
         vel.y = -8.0f;
         body->SetLinearVelocity(vel);
     }
-    if(numFootContacts == 1)
+    if(nmbOfJump == 1)
     {
         b2Vec2 vel = body->GetLinearVelocity();
         vel.y = -8.0f;
         body->SetLinearVelocity(vel);
-        numFootContacts--;
+        nmbOfJump--;
     }
 }
 
@@ -88,6 +87,7 @@ void Player::Init( GraphicsManager &graphicsManager, PhysicsManager &physicsMana
 
     boxShape.SetAsBox((sprite.getTextureRect().width / 100.0f) / 4.0f, (sprite.getTextureRect().height / 100.0f) / 2.0f);
     fixtureDef.shape = &boxShape;
+    fixtureDef.friction = 0;
     fixtureDef.density = 1;
     body->CreateFixture(&fixtureDef);
     body->SetGravityScale(2.0f);
@@ -107,6 +107,9 @@ void Player::Render(sf::RenderWindow &renderWindow)
 
 void Player::Update(float deltaTime)
 {
+    std::cout<<playerAnimIndex<<"\n";
+
+
     sprite.setPosition(body->GetPosition().x * 100, body->GetPosition().y * 100);
 
     switch (state)
@@ -116,14 +119,25 @@ void Player::Update(float deltaTime)
             loopTime += deltaTime;
             if(loopTime >= 0.025f)
             {
-                std::cout<<"idle anim size is : "<< IdleAnim.size()<< "\n";
+                sprite.setTexture(idleTexture);
                 sprite.setTextureRect(IdleAnim[playerAnimIndex]);
+
                 playerAnimIndex++;
                 loopTime = 0;
             }
             if(playerAnimIndex == IdleAnim.size())
             {
                 playerAnimIndex = 0;
+            }
+            if(!isGrounded)
+            {
+                playerAnimIndex = 0;
+                state = AnimState::JUMP;
+            }
+            if(isGrounded && body->GetLinearVelocity().x != 0.0f)
+            {
+                playerAnimIndex = 0;
+                state = AnimState::RUN;
             }
             break;
         }
@@ -132,13 +146,25 @@ void Player::Update(float deltaTime)
             loopTime += deltaTime;
             if(loopTime >= 0.025f)
             {
+                sprite.setTexture(runTexture);
                 sprite.setTextureRect(RunAnim[playerAnimIndex]);
+
                 playerAnimIndex++;
                 loopTime = 0;
             }
             if(playerAnimIndex == RunAnim.size())
             {
                 playerAnimIndex = 0;
+            }
+            if(isGrounded && body->GetLinearVelocity() == b2Vec2(0.0f,0.0f))
+            {
+                playerAnimIndex = 0;
+                state = AnimState::IDLE;
+            }
+            if(!isGrounded)
+            {
+                playerAnimIndex = 0;
+                state = AnimState::JUMP;
             }
             break;
         }
@@ -147,13 +173,25 @@ void Player::Update(float deltaTime)
             loopTime += deltaTime;
             if(loopTime >= 0.025f)
             {
+                sprite.setTexture(jumpTexture);
                 sprite.setTextureRect(JumpAnim[playerAnimIndex]);
+
                 playerAnimIndex++;
                 loopTime = 0;
             }
             if(playerAnimIndex == JumpAnim.size())
             {
                 playerAnimIndex = 0;
+            }
+            if(isGrounded && body->GetLinearVelocity() == b2Vec2(0.0f,0.0f))
+            {
+                playerAnimIndex = 0;
+                state = AnimState::IDLE;
+            }
+            if(isGrounded && body->GetLinearVelocity().x != 0.0f)
+            {
+                playerAnimIndex = 0;
+                state = AnimState::RUN;
             }
             break;
         }
@@ -163,7 +201,11 @@ void Player::Update(float deltaTime)
 
 void Player::stopMoving()
 {
-    body->SetLinearVelocity(b2Vec2(0.0f,body->GetLinearVelocity().y));
+    if(isGrounded)
+    {
+        body->SetLinearVelocity(b2Vec2(0.0f,body->GetLinearVelocity().y));
+    }
+
 }
 
 sf::Vector2f Player::GetPosition()
@@ -182,14 +224,16 @@ void ContactListener::BeginContact(b2Contact *contact)
     void* fixtureUserData = contact->GetFixtureA()->GetUserData();
     if (fixtureUserData == (void*)2)
     {
-        player.numFootContacts = 2;
+        player.nmbOfJump = 2;
+        player.isGrounded = true;
     }
 
     //check if fixture B was the foot sensor
     fixtureUserData = contact->GetFixtureB()->GetUserData();
     if (fixtureUserData == (void*)2)
     {
-        player.numFootContacts = 2;
+        player.nmbOfJump = 2;
+        player.isGrounded = true;
     }
 }
 
@@ -199,14 +243,16 @@ void ContactListener::EndContact(b2Contact *contact)
     void* fixtureUserData = contact->GetFixtureA()->GetUserData();
     if ( fixtureUserData == (void*)2)
     {
-        player.numFootContacts = 1;
+        player.nmbOfJump = 1;
+        player.isGrounded = false;
     }
 
     //check if fixture B was the foot sensor
     fixtureUserData = contact->GetFixtureB()->GetUserData();
     if ( fixtureUserData == (void*)2)
     {
-        player.numFootContacts = 1;
+        player.nmbOfJump = 1;
+        player.isGrounded = false;
     }
 }
 

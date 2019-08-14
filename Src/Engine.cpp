@@ -48,11 +48,7 @@ void Engine::Loop()
             }
             if(event.type == sf::Event::KeyReleased)
             {
-                auto key = event.key.code;
-                if (key == sf::Keyboard::D || key == sf::Keyboard::A)
-                {
-                    player.stopMoving();
-                }
+                player.stopMoving();
             }
 
             if(event.type == sf::Event::MouseWheelScrolled)
